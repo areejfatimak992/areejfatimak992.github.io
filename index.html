@@ -667,7 +667,7 @@ footer .f-links{display:flex;gap:18px;flex-wrap:wrap}
         chips.forEach(function(c){c.setAttribute('aria-pressed',String(c===chip));});
         var shown=0;
         [].forEach.call(grid.querySelectorAll('.proj'),function(card){
-          var tags=(card.getAttribute('data-tags')||'').split(/s+/);
+          var tags=(card.getAttribute('data-tags')||'').trim().split(' ');
           var show = want==='all' || tags.indexOf(want)>-1;
           card.hidden=!show;
           if(show) shown++;

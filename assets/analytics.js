@@ -324,6 +324,9 @@
     dntActive: dntOn
   };
 
-  if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', start);
-  else start();
+  // dashboard.html sets this: it needs the API but must not record its own visits.
+  if (!win.AF_ANALYTICS_DISABLE_AUTO) {
+    if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', start);
+    else start();
+  }
 })(window, document);

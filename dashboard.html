@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Analytics Dashboard | Areej Fatima</title>
+<meta name="description" content="Engagement dashboard and reporting for areejfatimak992.github.io — visits, CV downloads, contact clicks and section engagement.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0F2740">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230F2740'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-weight='700' font-size='26' fill='white'>AF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/dashboard.css">
+<script>
+  // Apply the saved theme before first paint so the dashboard never flashes.
+  try{var t=localStorage.getItem('theme'); if(t) document.documentElement.setAttribute('data-theme',t);}catch(e){}
+  // The dashboard reads the store; it must not write to it.
+  window.AF_ANALYTICS_DISABLE_AUTO = true;
+</script>
+</head>
+<body class="viz">
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <i>A<b>F</b></i>
+      <span>Areej Fatima<small>Portfolio analytics</small></span>
+    </a>
+    <div class="topbar-right">
+      <a class="back" href="index.html">&larr; Back to site</a>
+      <button class="icon-btn" id="theme" type="button" aria-label="Switch light or dark theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap page-head">
+  <h1>Engagement dashboard</h1>
+  <p>How visitors move through the portfolio: what they read, what they click, and whether they reach the contact section.</p>
+  <div class="notice">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg>
+    <div>
+      <b>This data never leaves your browser.</b>
+      Events are written to this device's <code>localStorage</code> by <code>assets/analytics.js</code> — there is no server and no third-party tracker, so the dashboard reports on <em>this browser's</em> visits only. Use <b>Export JSON</b> on another device and <b>Import</b> here to combine them. Visitors with Do Not Track enabled are never recorded.
+    </div>
+  </div>
+</div>
+
+<div class="filterbar">
+  <div class="wrap">
+    <div class="rangeset" role="group" aria-label="Date range">
+      <button type="button" data-range="7" aria-pressed="false">7 days</button>
+      <button type="button" data-range="30" aria-pressed="true">30 days</button>
+      <button type="button" data-range="90" aria-pressed="false">90 days</button>
+      <button type="button" data-range="all" aria-pressed="false">All time</button>
+    </div>
+    <div class="custom">
+      <label for="from">From</label>
+      <input type="date" id="from" aria-label="Range start">
+      <label for="to">to</label>
+      <input type="date" id="to" aria-label="Range end">
+    </div>
+
+    <div class="spacer"></div>
+
+    <button class="btn" id="exportCsv" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>
+      CSV report
+    </button>
+    <button class="btn" id="exportJson" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2M9 4h6v3H9z"/></svg>
+      Backup JSON
+    </button>
+    <button class="btn" id="importBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21V9M7 14l5-5 5 5M4 3h16"/></svg>
+      Import
+    </button>
+    <input type="file" id="importFile" accept="application/json,.json" class="sr-only">
+    <button class="btn" id="demoBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>
+      Load demo data
+    </button>
+    <button class="btn btn-danger" id="clearBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>
+      Clear
+    </button>
+
+    <p class="scope-note" id="scopeNote">Showing the last 30 days.</p>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="tiles" aria-label="Key figures">
+    <div class="tile">
+      <div class="label">Page views</div>
+      <div class="value" id="kpiViews">—</div>
+      <div id="kpiViewsDelta"></div>
+    </div>
+    <div class="tile">
+      <div class="label">Sessions</div>
+      <div class="value" id="kpiSessions">—</div>
+      <div class="sub" id="kpiVisitors">—</div>
+    </div>
+    <div class="tile">
+      <div class="label">CV downloads</div>
+      <div class="value" id="kpiCv">—</div>
+      <div class="sub" id="kpiCvRate">—</div>
+    </div>
+    <div class="tile">
+      <div class="label">Contact clicks</div>
+      <div class="value" id="kpiContact">—</div>
+      <div class="sub">Email · WhatsApp · copy</div>
+    </div>
+    <div class="tile">
+      <div class="label">Avg. time on page</div>
+      <div class="value" id="kpiTime">—</div>
+      <div class="sub" id="kpiTimeN">—</div>
+    </div>
+    <div class="tile">
+      <div class="label">Reached contact</div>
+      <div class="value" id="kpiReach">—</div>
+      <div class="sub">of sessions scrolled to the end</div>
+    </div>
+  </section>
+
+  <section class="cards">
+
+    <article class="card span-8">
+      <div class="card-head">
+        <div>
+          <h2>Page views per day</h2>
+          <p>Daily views across the selected range.</p>
+        </div>
+        <button class="toggle" type="button" data-table="trend" aria-pressed="false">Table</button>
+      </div>
+      <div class="plot" id="trend"></div>
+    </article>
+
+    <article class="card span-4">
+      <div class="card-head">
+        <div>
+          <h2>Devices</h2>
+          <p>Viewport class at the time of the visit.</p>
+        </div>
+        <button class="toggle" type="button" data-table="devices" aria-pressed="false">Table</button>
+      </div>
+      <div class="plot" id="devices"></div>
+    </article>
+
+    <article class="card span-6">
+      <div class="card-head">
+        <div>
+          <h2>Section engagement</h2>
+          <p>Sessions that actually read each section.</p>
+        </div>
+        <button class="toggle" type="button" data-table="sections" aria-pressed="false">Table</button>
+      </div>
+      <div class="plot" id="sections"></div>
+    </article>
+
+    <article class="card span-6">
+      <div class="card-head">
+        <div>
+          <h2>Scroll depth</h2>
+          <p>How far down the page sessions get.</p>
+        </div>
+        <button class="toggle" type="button" data-table="depth" aria-pressed="false">Table</button>
+      </div>
+      <div class="plot" id="depth"></div>
+    </article>
+
+    <article class="card span-6">
+      <div class="card-head">
+        <div>
+          <h2>Top interactions</h2>
+          <p>Every recorded click and conversion event.</p>
+        </div>
+        <button class="toggle" type="button" data-table="events" aria-pressed="false">Table</button>
+      </div>
+      <div class="plot" id="events"></div>
+    </article>
+
+    <article class="card span-6">
+      <div class="card-head">
+        <div>
+          <h2>Traffic sources</h2>
+          <p>Where the session started from.</p>
+        </div>
+        <button class="toggle" type="button" data-table="sources" aria-pressed="false">Table</button>
+      </div>
+      <div class="plot" id="sources"></div>
+    </article>
+
+    <article class="card span-12">
+      <div class="card-head">
+        <div>
+          <h2>Event log</h2>
+          <p>Raw events in the selected range — the report behind every chart above.</p>
+        </div>
+      </div>
+      <div class="logbar">
+        <input type="search" id="logSearch" placeholder="Search event name, section, host…" aria-label="Search events">
+        <select id="logType" aria-label="Filter by event type"><option value="">All event types</option></select>
+        <span class="spacer"></span>
+        <button class="btn" id="exportLog" type="button">Export this table (CSV)</button>
+      </div>
+      <div class="tbl-wrap">
+        <table id="logTable">
+          <thead>
+            <tr>
+              <th class="sortable" data-sort="t" scope="col">When</th>
+              <th class="sortable" data-sort="e" scope="col">Event</th>
+              <th scope="col">Details</th>
+              <th class="sortable" data-sort="s" scope="col">Session</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <button type="button" id="prevPage">&larr; Prev</button>
+        <span id="pageInfo">—</span>
+        <button type="button" id="nextPage">Next &rarr;</button>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Areej Fatima · Portfolio analytics</span>
+    <span><a href="index.html">Back to portfolio</a></span>
+  </div>
+</footer>
+
+<script src="assets/analytics.js" defer></script>
+<script src="assets/dashboard.js" defer></script>
+</body>
+</html>
