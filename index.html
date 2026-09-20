@@ -628,7 +628,9 @@ footer .f-links{display:flex;gap:18px;flex-wrap:wrap}
   var nav=document.getElementById('nav');
   addEventListener('scroll',function(){nav.classList.toggle('scrolled',scrollY>10);},{passive:true});
 
-  // CV: embedded copy so the button always works
+  // CV: open it in a new tab to read AND save a copy, from one click.
+  // The blob (assets/cv-data.js) keeps the download working offline; the real
+  // cv.pdf URL is what the browser's own PDF viewer previews most reliably.
   function cvUrl(){
     if(!window.AF_CV_B64) return null;
     var bin=atob(window.AF_CV_B64), arr=new Uint8Array(bin.length);
@@ -637,12 +639,23 @@ footer .f-links{display:flex;gap:18px;flex-wrap:wrap}
   }
   document.querySelectorAll('[data-cv]').forEach(function(a){
     a.addEventListener('click',function(e){
-      var url=cvUrl();
-      if(!url) return; // assets/cv-data.js not loaded yet: let the plain cv.pdf href do the work
       e.preventDefault();
-      var w=window.open(url,'_blank');
-      if(!w){var d=document.createElement('a');d.href=url;d.download='Areej_Fatima_CV.pdf';document.body.appendChild(d);d.click();d.remove();}
-      setTimeout(function(){URL.revokeObjectURL(url);},60000);
+      var href=a.getAttribute('href')||'cv.pdf';
+      var blob=cvUrl();
+
+      // 1. preview — keep this first so it still counts as the user's click.
+      // No 'noopener' here: it makes window.open return null, which would
+      // trigger the fallback below and open a second tab. Same-origin file.
+      var w=window.open(href,'_blank');
+      if(!w && blob) w=window.open(blob,'_blank');
+
+      // 2. save a copy
+      var d=document.createElement('a');
+      d.href=blob||href;
+      d.download='Areej_Fatima_CV.pdf';
+      document.body.appendChild(d); d.click(); d.remove();
+
+      if(blob) setTimeout(function(){URL.revokeObjectURL(blob);},60000);
     });
   });
 
