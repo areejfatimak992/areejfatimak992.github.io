@@ -131,6 +131,24 @@ h1,h2,h3{margin:0;line-height:1.25}
 .btn-danger:hover{border-color:var(--critical);color:var(--critical)}
 .scope-note{width:100%;font-size:.82rem;color:var(--muted);margin:0}
 
+/* ---------- first-run banner ---------------------------------------------- */
+.starter{
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  background:var(--card);border:1px solid var(--line);border-left:4px solid var(--amber);
+  border-radius:14px;padding:22px 24px;margin:26px 0 0;
+}
+.starter[hidden]{display:none}
+.starter-ic{
+  width:46px;height:46px;border-radius:12px;flex-shrink:0;
+  background:var(--blue-soft);color:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+}
+.starter-ic svg{width:22px;height:22px}
+.starter-body{flex:1 1 320px;min-width:0}
+.starter-body h2{font-size:1.05rem;font-weight:700}
+.starter-body p{margin:6px 0 0;color:var(--muted);font-size:.9rem;max-width:66ch}
+.starter .btn{flex-shrink:0}
+
 /* ---------- stat tiles ---------------------------------------------------- */
 .tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin:26px 0}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}

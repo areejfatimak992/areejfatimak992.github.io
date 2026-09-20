@@ -903,6 +903,8 @@
     renderCharts();
     renderLog();
     setScopeNote();
+    /* An empty store means a first-time visitor, not a broken page — say so. */
+    $('#emptyBanner').hidden = state.all.length > 0;
   }
 
   function reload() { loadEvents(); refresh(); }
@@ -1002,7 +1004,12 @@
 
     /* demo data + clear */
     $('#demoBtn').addEventListener('click', function () {
-      if (!confirm('Replace the stored events with 45 days of realistic demo data?\n\nYour current events will be lost — export a backup first if you need them.')) return;
+      /* Only warn when there is something to lose. */
+      if (state.all.length && !confirm('Replace the stored events with 45 days of realistic demo data?\n\nYour current events will be lost — export a backup first if you need them.')) return;
+      seedDemo();
+      reload();
+    });
+    $('#starterBtn').addEventListener('click', function () {
       seedDemo();
       reload();
     });
